@@ -1,16 +1,16 @@
-// title: Uptime Monitoring Application 
-// description: A RESTFUL API to Monitor Up or down time of User defined links
-//Author : MAR miju
-// Started date : 11/12/2024
+// Title: Uptime Monitoring Application
+// Description: A RESTful API to monitor uptime or downtime of user-defined links
+// Author: MAR Miju
+// Started Date: 11/12/2024
 
-
-//defendencies
+// Dependencies
 const http = require('http');
+const { handleReqRes } = require('./Helper/handlerReqRes'); // Adjusted to relative path
 
-// app object - module scaffolding
+// App object - module scaffolding
 const app = {};
 
-// Configuration 
+// Configuration
 app.config = {
     port: 5000,
 };
@@ -19,18 +19,12 @@ app.config = {
 app.createServer = () => {
     const server = http.createServer(app.handleReqRes);
     server.listen(app.config.port, () => {
-        console.log(`Listening to port ${app.config.port},\n Main URL: http://localhost:${app.config.port}`);
+        console.log(`Listening on port ${app.config.port},\n Main URL: http://localhost:${app.config.port}`);
     });
 };
 
 // Handle Request Response
-app.handleReqRes = (req, res) => {
-    // Set the response headers
-    res.writeHead(200, { 'Content-Type': 'text/plain' });
+app.handleReqRes = handleReqRes;
 
-    // Send the response
-    res.write('Hello World');
-    res.end();
-};
-
+// Start the server
 app.createServer();
