@@ -12,7 +12,7 @@ const app = {};
 
 // Configuration
 app.config = {
-    port: 5000,
+    port: 1000,
 };
 
 // Create Server

@@ -1,6 +1,10 @@
 // Dependencies
 const url = require('url');
 const { StringDecoder } = require('string_decoder');
+const routes = require('../routes');
+const { notfoundhandler } = require('../Handlers/routeHandlers/NotFound');
+
+
 
 // Module scaffolding
 const handler = {};
@@ -15,6 +19,27 @@ handler.handleReqRes = (req, res) => {
     const queryObject = parsedUrl.query;
     const headerObject = req.headers;
 
+    const handlerPropertiece = {
+        parsedUrl,
+        path,
+        trimmedPath,
+        method,
+        queryObject,
+        headerObject,
+    }
+
+    const chosenHandler = routes[trimmedPath] ? routes[trimmedPath] : notfoundhandler;
+
+    chosenHandler (handlerPropertiece,(statusCode,payload)=>{
+        const StatusCode = typeof(statusCode) === 'number' ?statusCode : 500;
+        const PayLoad = typeof(payload) === 'object' ? payload : {};
+         const Spayload = JSON.stringify(PayLoad);
+
+         res.writeHead(StatusCode);
+         res.end(Spayload);
+    })
+
+
     // Buffer to hold the payload
     const decoder = new StringDecoder('utf-8');
     let realData = '';
@@ -22,23 +47,17 @@ handler.handleReqRes = (req, res) => {
         realData += decoder.write(buffer);
     });
 
-    req.on('end', () => {
-        realData += decoder.end();
-        console.log({
-            trimmedPath,
-            method,
-            queryObject,
-            headerObject,
-            realData,
-        });
+    // req.on('end', () => {
+    //     realData += decoder.end();
+       
 
-        // Set response headers
-        res.setHeader('Content-Type', 'application/json');
+    //     // Set response headers
+    //     res.setHeader('Content-Type', 'application/json');
 
-        // Send response
-        res.writeHead(200);
-        res.end(JSON.stringify({ message: 'Hello, World!', data: realData }));
-    });
+    //     // Send response
+    //     res.writeHead(200);
+    //     res.end(JSON.stringify({ message: 'Hello, World!', data: realData }));
+    // });
 };
 
 module.exports = handler;
